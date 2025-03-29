@@ -33,7 +33,7 @@ function AllExpenses() {
         columns={expensesAdminColumns} // Updated columns reference
         dataSource={expenses} // Updated data source
         pagination={false} // Disable pagination
-        scroll={{ y: 600 }}
+        scroll={{ y: 450, x: "max-content" }}
         onScroll={(e) => {
           const target = e.target as HTMLDivElement;
           if (target.scrollHeight - target.scrollTop === target.clientHeight) {

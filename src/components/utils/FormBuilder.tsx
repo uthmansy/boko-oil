@@ -24,6 +24,7 @@ interface FormBuilderProps {
   styles?: React.CSSProperties;
   showSubmitButton?: boolean;
   fullWidthButton?: boolean;
+  className?: string;
 }
 
 const FormBuilder: React.FC<FormBuilderProps> = ({
@@ -35,6 +36,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({
   styles = {},
   showSubmitButton = true,
   fullWidthButton = false,
+  className = "",
 }) => {
   const [form] = Form.useForm();
 
@@ -207,7 +209,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({
         style={styles}
         className={`grid ${
           columns === 1 ? "" : "md:grid-cols-2"
-        } grid-cols-1 gap-x-3`}
+        } grid-cols-1 gap-x-3 ${className}`}
       >
         {formConfig.map((field) => {
           if (field.type === "dynamic")

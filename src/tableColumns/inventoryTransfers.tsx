@@ -9,6 +9,7 @@ export const inventoryTransfersAdminColumns: ColumnsType<InventoryTransferWithSt
       title: "S.N",
       render: (_, __, index) => index + 1, // Calculate row number
       width: 40,
+      fixed: "left",
     },
     {
       title: "Date",

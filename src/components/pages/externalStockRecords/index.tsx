@@ -1,9 +1,11 @@
 import { Descriptions, Empty, Flex, Segmented, Space, Spin } from "antd";
 import useExternalStockRecords from "../../../hooks/useExternalStockRecords";
+import { useMediaQuery } from "react-responsive";
 
 function ExternalStockRecords() {
   const { items, tableItems, handleItem, isLoading, records } =
     useExternalStockRecords();
+  const isMobile = useMediaQuery({ maxWidth: 1024 });
 
   return (
     <>
@@ -37,7 +39,7 @@ function ExternalStockRecords() {
               bordered
               key={index}
               items={item}
-              column={2}
+              column={isMobile ? 1 : 2}
             />
           ))}
         </Space>

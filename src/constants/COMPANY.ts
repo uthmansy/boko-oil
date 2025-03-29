@@ -1,3 +1,3 @@
-const name = "Boko Agro Allied Nig Ltd";
-const address = "No.60/61 UNGOGO ROAD KANO, KANO STATE UNGOGO, 700105, Kano";
+const name = "Boko Vegetable Oil Nig Ltd";
+const address = "Kano State";
 export const COMPANY = { name, address };

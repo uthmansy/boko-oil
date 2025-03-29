@@ -7,29 +7,36 @@ import { useEffect } from "react";
 import TransitWaybill from "../transit/TransitWaybill";
 
 function ExternalDispatch() {
-  const {} = useExternalDispatch();
+  useExternalDispatch();
   const {
     currentPage,
-    prevPage,
+    // prevPage,
     resetValues,
     setFromExternalStock,
     newDispatchVehicle,
+    setToCustomer,
+    nextPage,
   } = useDispatchStore();
-  useEffect(() => {
+  const reset = () => {
     resetValues();
     setFromExternalStock(true);
+    setToCustomer(false);
+    nextPage();
+  };
+  useEffect(() => {
+    reset();
   }, []);
 
   return (
     <div>
       <Space className="mb-5">
-        {currentPage !== 1 && currentPage !== 3 && (
+        {/* {currentPage !== 1 && currentPage !== 3 && (
           <Button type="primary" onClick={prevPage}>
             Back
           </Button>
-        )}
+        )} */}
         {currentPage == 3 && (
-          <Button type="primary" onClick={resetValues}>
+          <Button type="primary" onClick={reset}>
             Reset
           </Button>
         )}

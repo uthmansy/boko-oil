@@ -10,6 +10,7 @@ interface Props {
 
 function PrintPayroll({ payroll }: Props) {
   const { handleCloseModal, handleOpenModal, isModalOpen } = usePrintPayroll();
+  console.log(payroll);
 
   return (
     <>

@@ -16,7 +16,7 @@ import {
 import { SalesSchema } from "../zodSchemas/sales"; // Update to SalesSchema
 import useSalesStore from "../store/sales";
 import { useEffect, useState } from "react";
-import { StocksWithSoldBalance } from "../types/db";
+import { InventoryItems, StocksWithSoldBalance } from "../types/db";
 
 interface HookReturn {
   isModalOpen: boolean;
@@ -38,10 +38,10 @@ function useAddNewSale(): HookReturn {
   >([]);
 
   const { data: items } = useQuery({
-    queryKey: inventoryItemsKeys.getAllItems,
-    queryFn: async (): Promise<SelectOption[]> => {
+    queryKey: inventoryItemsKeys.getAllProducts,
+    queryFn: async (): Promise<InventoryItems[]> => {
       const items = await getInventoryItems();
-      return items.map((item) => ({ label: item.name, value: item.name }));
+      return items;
     },
     onError: () => {
       message.error("Failed to Load Inventory Items");
@@ -98,7 +98,7 @@ function useAddNewSale(): HookReturn {
         externalStocks.map((stock) => ({
           label: `${stock.stock_purchases.item} / ${
             stock.stock_purchases.seller
-          } - (${stock.balance - stock.totalSoldBalance} bags Available)`,
+          } - (${stock.balance - stock.totalSoldBalance} Pieces Available)`,
           value: stock.id,
         }))
       );
@@ -120,22 +120,19 @@ function useAddNewSale(): HookReturn {
             name: "item_purchased",
             label: "Item Purchased",
             type: "select",
-            options: items || [],
+            options:
+              items
+                ?.filter((item) => item.type === "product")
+                .map((item) => ({ label: item.name, value: item.name })) || [],
             required: true,
           },
         ]
       : []) as FieldConfig[]),
     {
-      name: "price",
-      label: "Price",
-      type: "money",
-      required: true,
-    },
-    {
       name: "quantity",
       label: "Quantity",
       type: "number",
-      suffix: "BAGS",
+      suffix: "Pieces",
       required: true,
       dependencies: ["external_stock"],
       getMaxFromDependency: (values) => {
@@ -147,6 +144,21 @@ function useAddNewSale(): HookReturn {
 
           return balance;
         }
+      },
+    },
+    {
+      name: "price",
+      label: "Price",
+      type: "money",
+      dependencies: ["item_purchased", "quantity"],
+      required: true,
+      getValueFromDependency: (values) => {
+        const item = items?.find(
+          (item) => item.name === values?.item_purchased
+        );
+        return item?.unit_price && values?.quantity
+          ? item.unit_price * values.quantity
+          : undefined;
       },
     },
     {
@@ -215,6 +227,7 @@ function useAddNewSale(): HookReturn {
         }
 
         await SalesSchema.parseAsync(values);
+        console.log(values);
         await addSale(values); // Use addSale function for sales
       } catch (error) {
         if (error instanceof ZodError) {

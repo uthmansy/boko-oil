@@ -11,8 +11,8 @@ import {
   getWarehousesNames,
 } from "../helpers/apiFunctions";
 import { useEffect, useState } from "react";
-import { Stocks } from "../types/db";
-import { bagsToTons, formatNumber } from "../helpers/functions";
+import { Stocks, StocksWithDetails } from "../types/db";
+import { formatNumber } from "../helpers/functions";
 import useAuthStore from "../store/auth";
 
 interface HookReturn {
@@ -69,8 +69,8 @@ function useStockRecords(): HookReturn {
     isLoading,
     isRefetching,
   } = useQuery({
-    queryKey: [stocksKeys.getItemRecord, warehouse, item],
-    queryFn: async (): Promise<Stocks> => {
+    queryKey: [stocksKeys.getItemRecordWithDetails, warehouse, item],
+    queryFn: async (): Promise<StocksWithDetails> => {
       const record = await getItemRecord(warehouse, item);
       return record;
     },
@@ -86,10 +86,7 @@ function useStockRecords(): HookReturn {
       children: (
         <div className="flex">
           <span className="w-1/2">
-            {formatNumber(record?.balance || 0)} BAGS
-          </span>
-          <span className="w-1/2">
-            {formatNumber(bagsToTons(record?.balance || 0))} MTS
+            {formatNumber(record?.balance || 0)} {record?.item_info.unit}
           </span>
         </div>
       ),
@@ -100,10 +97,7 @@ function useStockRecords(): HookReturn {
       children: (
         <div className="flex">
           <span className="w-1/2">
-            {formatNumber(record?.dispatched || 0)} BAGS
-          </span>
-          <span className="w-1/2">
-            {formatNumber(bagsToTons(record?.dispatched || 0))} MTS
+            {formatNumber(record?.dispatched || 0)} {record?.item_info.unit}
           </span>
         </div>
       ),
@@ -114,70 +108,52 @@ function useStockRecords(): HookReturn {
       children: (
         <div className="flex">
           <span className="w-1/2">
-            {formatNumber(record?.received || 0)} BAGS
-          </span>
-          <span className="w-1/2">
-            {formatNumber(bagsToTons(record?.received || 0))} MTS
+            {formatNumber(record?.received || 0)} {record?.item_info.unit}
           </span>
         </div>
       ),
     },
-    {
-      key: "4",
-      label: "Utilized",
-      children: (
-        <div className="flex">
-          <span className="w-1/2">
-            {formatNumber(record?.utilized || 0)} BAGS
-          </span>
-          <span className="w-1/2">
-            {formatNumber(bagsToTons(record?.utilized || 0))} MTS
-          </span>
-        </div>
-      ),
-    },
-    {
-      key: "5",
-      label: "Produced",
-      children: (
-        <div className="flex">
-          <span className="w-1/2">
-            {formatNumber(record?.produced || 0)} BAGS
-          </span>
-          <span className="w-1/2">
-            {formatNumber(bagsToTons(record?.produced || 0))} MTS
-          </span>
-        </div>
-      ),
-    },
-    {
-      key: "5",
-      label: "Production Balance",
-      children: (
-        <div className="flex">
-          <span className="w-1/2">
-            {formatNumber(record?.production_balance || 0)} BAGS
-          </span>
-          <span className="w-1/2">
-            {formatNumber(bagsToTons(record?.production_balance || 0))} MTS
-          </span>
-        </div>
-      ),
-    },
-    {
-      key: "7",
-      label: "Production Inflow",
-      children: (
-        <div className="flex">
-          <span className="w-1/2">
-            {formatNumber(record?.production_inflow || 0)} BAGS
-          </span>
-          <span className="w-1/2">
-            {formatNumber(bagsToTons(record?.production_inflow || 0))} MTS
-          </span>
-        </div>
-      ),
-    },
+    ...(record?.item_info.type === "product"
+      ? [
+          {
+            key: "4",
+            label: "Packaged",
+            children: (
+              <div className="flex">
+                <span className="w-1/2">
+                  {formatNumber(record?.packaged_received || 0)}{" "}
+                  {record?.item_info.unit}
+                </span>
+              </div>
+            ),
+          },
+          {
+            key: "4",
+            label: "Damaged",
+            children: (
+              <div className="flex">
+                <span className="w-1/2">
+                  {formatNumber(record?.damaged || 0)} {record?.item_info.unit}
+                </span>
+              </div>
+            ),
+          },
+          {
+            key: "4",
+            label: "Estimated Value",
+            children: (
+              <div className="flex">
+                <span className="w-1/2">
+                  ₦
+                  {record.balance &&
+                    record.item_info.unit_price &&
+                    formatNumber(record?.balance * record.item_info.unit_price)}
+                </span>
+              </div>
+            ),
+          },
+        ]
+      : []),
   ];
 
   return {

@@ -19,6 +19,7 @@ export type Enrollment = Database["public"]["Tables"]["user_enrollment"]["Row"];
 export type InsertEnrollment =
   Database["public"]["Tables"]["user_enrollment"]["Insert"];
 export type Expenses = Database["public"]["Tables"]["expenses"]["Row"];
+export type Damages = Database["public"]["Tables"]["damages"]["Row"];
 export type InsertExpenses = Database["public"]["Tables"]["expenses"]["Insert"];
 export type UpdateExpenses = Database["public"]["Tables"]["expenses"]["Update"];
 export type Employees = Database["public"]["Tables"]["employees"]["Row"];
@@ -72,6 +73,12 @@ export interface VehiclesAndDestination extends Vehicles {
   sale: Sales;
   dispatch_officer_info: UserProfile;
   receive_officer_info: UserProfile;
+  item_info: InventoryItems;
+  vehicle_expenses: VehicleExpense[];
+}
+export interface VehicleExpensesDetails extends VehicleExpense {
+  vehicle_details: Vehicles;
+  added_by_details: UserProfile;
 }
 export interface RequestWithItems extends Requests {
   request_items: RequestItem[];
@@ -80,6 +87,10 @@ export interface ProductionWithItems extends Productions {
   production_raw_materials: ProductionRawMaterials[];
 }
 export type Purchases = Database["public"]["Tables"]["stock_purchases"]["Row"];
+export type VehicleExpense =
+  Database["public"]["Tables"]["vehicle_expenses"]["Row"];
+export type InsertVehicleExpense =
+  Database["public"]["Tables"]["vehicle_expenses"]["Insert"];
 export type Sales = Database["public"]["Tables"]["sales"]["Row"];
 export type SalesPayments =
   Database["public"]["Tables"]["sales_payments"]["Row"];
@@ -87,12 +98,17 @@ export type PurchasePayments =
   Database["public"]["Tables"]["purchase_order_payments"]["Row"];
 export type InventoryItems =
   Database["public"]["Tables"]["inventory_items"]["Row"];
+export type UpdateInventoryItems =
+  Database["public"]["Tables"]["inventory_items"]["Update"];
 export type Stocks = Database["public"]["Tables"]["stocks"]["Row"];
 export type ExternalStocks =
   Database["public"]["Tables"]["external_stocks"]["Row"];
 export interface ExternalStocksAndPurchases extends ExternalStocks {
   stock_purchases: Purchases;
   sales: Sales[];
+  item_info: {
+    item: InventoryItems;
+  };
 }
 export interface InventoryTransferWithStocks extends InventoryTransfer {
   originStock: Stocks;
@@ -101,4 +117,19 @@ export interface InventoryTransferWithStocks extends InventoryTransfer {
 }
 export interface StocksWithSoldBalance extends ExternalStocksAndPurchases {
   totalSoldBalance: number;
+}
+
+export interface PurchasesAndPayments extends Purchases {
+  payments: PurchasePayments[];
+}
+
+export interface SalesAndPayments extends Sales {
+  payments: SalesPayments[];
+}
+
+export interface StocksWithDetails extends Stocks {
+  item_info: InventoryItems;
+}
+export interface DamagesWithDetails extends Damages {
+  added_by_info: UserProfile;
 }

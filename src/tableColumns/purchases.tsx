@@ -1,13 +1,14 @@
 import { ColumnsType } from "antd/es/table";
-import { Purchases } from "../types/db";
+import { PurchasesAndPayments } from "../types/db";
 import TableActions from "../components/pages/purchases/TableActions";
 import { formatNumber } from "../helpers/functions";
 
-export const purchasesAdminColumns: ColumnsType<Purchases> = [
+export const purchasesAdminColumns: ColumnsType<PurchasesAndPayments> = [
   {
     title: "S.N",
     render: (_, __, index) => index + 1, // Calculate row number
-    width: "5%",
+    width: 30,
+    fixed: "left",
   },
   {
     title: "Order Number",
@@ -21,13 +22,14 @@ export const purchasesAdminColumns: ColumnsType<Purchases> = [
     dataIndex: "item",
     key: "item",
     render: (text) => <span className="capitalize font-semibold">{text}</span>,
+    width: 150,
   },
   {
     title: "Quantity",
     dataIndex: "quantity",
     key: "quantity",
     render: (text) => (
-      <span className="italic">{`${formatNumber(text)}`} BAGS</span>
+      <span className="italic">{`${formatNumber(text)}`} Pieces</span>
     ),
     width: 120,
   },
@@ -61,6 +63,6 @@ export const purchasesAdminColumns: ColumnsType<Purchases> = [
   {
     title: "Action",
     key: "action",
-    render: (_, record) => <TableActions orderNumber={record.order_number} />,
+    render: (_, record) => <TableActions purchase={record} />,
   },
 ];

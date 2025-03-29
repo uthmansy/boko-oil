@@ -1,7 +1,7 @@
 import { Table } from "antd";
 import useReceivedVehicles from "../../../hooks/useReceivedVehicles"; // Use a hook for received vehicles
 import { useVehicleColumns } from "../../../tableColumns/vehicles"; // Columns for received vehicles
-import FormBuilder from "../../utils/FormBuilder";
+// import FormBuilder from "../../utils/FormBuilder";
 
 function AllReceivedVehicles() {
   const {
@@ -10,32 +10,33 @@ function AllReceivedVehicles() {
     fetchNextPage,
     isFetchingNextPage,
     isRefetching,
-    filterFormConfig,
-    handleSubmit,
+    // filterFormConfig,
+    // handleSubmit,
   } = useReceivedVehicles(); // Use the correct hook for received vehicles
 
   const { receivedColumns } = useVehicleColumns();
 
   return (
     <>
-      <FormBuilder
+      {/* <FormBuilder
         formConfig={filterFormConfig}
         onSubmit={handleSubmit}
         loading={isLoading}
         showSubmitButton={false}
-        styles={{
-          display: "grid",
-          gridTemplateColumns: "repeat(4, 1fr)",
-          gap: "16px", // Optional: to add spacing between the columns
-        }}
-      />
+        className="grid grid-cols-2 lg:grid-cols-4 gap-5"
+        // styles={{
+        //   display: "grid",
+        //   gridTemplateColumns: "repeat(4, 1fr)",
+        //   gap: "16px", // Optional: to add spacing between the columns
+        // }}
+      /> */}
       <Table
         size="small"
         loading={isLoading || isFetchingNextPage || isRefetching}
         columns={receivedColumns} // Use the correct columns for received vehicles
         dataSource={vehicles}
         pagination={false} // Disable pagination
-        scroll={{ y: 600 }}
+        scroll={{ y: 600, x: 1200 }}
         onScroll={(e) => {
           const target = e.target as HTMLDivElement;
           if (target.scrollHeight - target.scrollTop === target.clientHeight) {

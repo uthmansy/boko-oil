@@ -1,3 +1,4 @@
+import { BsQrCodeScan } from "react-icons/bs";
 import { SidebarMenuItem } from "../types/menu";
 import ROUTES from "./ROUTES";
 import {
@@ -17,11 +18,18 @@ import {
   CiPaperplane,
   CiSpeaker,
   CiSquarePlus,
+  CiTrash,
   CiUser,
 } from "react-icons/ci";
 
 const menuItems = {
   dashboard: { label: "Home", icon: CiHome, path: ROUTES.home },
+  damages: { label: "Damages", icon: CiTrash, path: ROUTES.damages },
+  vehicleExpenses: {
+    label: "Vehicle Expenses",
+    icon: CiTrash,
+    path: ROUTES.vehicleExpenses,
+  },
   warehouses: {
     label: "Warehouses",
     icon: CiLocationOn,
@@ -34,6 +42,11 @@ const menuItems = {
   },
   positions: { label: "Positions", icon: CiSpeaker, path: ROUTES.positions },
   payrolls: { label: "Payrolls", icon: CiLocationOn, path: ROUTES.payroll },
+  financialReports: {
+    label: "Financial Reports",
+    icon: CiLocationOn,
+    path: ROUTES.financialReports,
+  },
   expenses: { label: "Expenses", icon: CiLocationOn, path: ROUTES.expenses },
   userManagement: {
     label: "User Management",
@@ -78,6 +91,11 @@ const menuItems = {
     path: ROUTES.internalDispatch,
   },
   transit: { label: "Transit", icon: CiDeliveryTruck, path: ROUTES.transit },
+  scanWaybill: {
+    label: "Scan Waybill",
+    icon: BsQrCodeScan,
+    path: ROUTES.scanWaybill,
+  },
   receivedTrucks: {
     label: "Received Trucks",
     icon: CiDatabase,
@@ -127,6 +145,7 @@ const {
   externalDispatch,
   internalDispatch,
   transit,
+  scanWaybill,
   receivedTrucks,
   dispatchedTrucks,
   requests,
@@ -134,6 +153,9 @@ const {
   productSubmissions,
   employees,
   expenses,
+  financialReports,
+  damages,
+  vehicleExpenses,
 } = menuItems;
 
 export const superAdminMenuItems: SidebarMenuItem[] = [
@@ -142,46 +164,56 @@ export const superAdminMenuItems: SidebarMenuItem[] = [
   departments,
   positions,
   payrolls,
+  financialReports,
   userManagement,
   enrollment,
   stockRecords,
   externalStockRecords,
   inventoryItems,
+  damages,
   inventoryTransfers,
   purchases,
   sales,
   externalDispatch,
   internalDispatch,
   transit,
+  scanWaybill,
   receivedTrucks,
   dispatchedTrucks,
   requests,
   productionRuns,
   productSubmissions,
   employees,
+  vehicleExpenses,
 ];
 
 export const adminMenuItems: SidebarMenuItem[] = [
-  dashboard,
-  warehouses,
+  // dashboard,
+  // warehouses,
   departments,
   positions,
   payrolls,
+  financialReports,
   userManagement,
   enrollment,
   stockRecords,
   externalStockRecords,
   inventoryItems,
-  inventoryTransfers,
+  damages,
+  // inventoryTransfers,
   purchases,
   sales,
   externalDispatch,
   internalDispatch,
   transit,
+  // scanWaybill,
   receivedTrucks,
   dispatchedTrucks,
-  productionRuns,
+  // requests,
+  // productionRuns,
+  // productSubmissions,
   employees,
+  vehicleExpenses,
 ];
 
 export const productionMenuItems: SidebarMenuItem[] = [
@@ -194,20 +226,26 @@ export const productionMenuItems: SidebarMenuItem[] = [
 export const inventoryMenuItems: SidebarMenuItem[] = [
   dashboard,
   stockRecords,
-  inventoryItems,
+  damages,
+  // inventoryItems,
   internalDispatch,
   transit,
+  // scanWaybill,
   receivedTrucks,
   dispatchedTrucks,
-  requests,
-  productSubmissions,
+  sales,
+  vehicleExpenses,
+  // requests,
+  // productSubmissions,
 ];
 export const accountingMenuItems: SidebarMenuItem[] = [
   dashboard,
   payrolls,
+  financialReports,
   expenses,
   purchases,
   sales,
+  vehicleExpenses,
 ];
 export const logisticsMenuItems: SidebarMenuItem[] = [
   dashboard,
@@ -220,6 +258,7 @@ export const managerMenuItems: SidebarMenuItem[] = [
   departments,
   positions,
   payrolls,
+  financialReports,
   userManagement,
   enrollment,
   stockRecords,
@@ -233,5 +272,6 @@ export const managerMenuItems: SidebarMenuItem[] = [
   productSubmissions,
   employees,
   expenses,
+  vehicleExpenses,
 ];
 export const defaultMenuItems: SidebarMenuItem[] = [menuItems.dashboard];

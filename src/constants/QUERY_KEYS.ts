@@ -29,11 +29,17 @@ export const inventoryItemsKeys = {
   getAllInventoryItemsPaginated: "getAllInventoryItemsPaginated",
   getItemsNames: "getItemsNames",
   getItemRecord: "getItemRecord",
+  getAllProducts: "getAllProducts",
+  getAllRaws: "getAllRaws",
 };
 export const stocksKeys = {
   getItemRecord: "getItemRecord",
+  getItemRecordWithDetails: "getItemRecordWithDetails",
   getExternalStocks: "getExternalStocks",
   getInternalStocks: "getInternalStocks",
+};
+export const damagesKeys = {
+  getAllDamages: "getAllDamages",
 };
 export const externalStocksKeys = {
   getItemExternalRecord: "getItemExternalRecord",
@@ -78,4 +84,13 @@ export const userKeys = {
 export const transportFeesKeys = {
   getFees: "getFees",
   getAllFees: "getAllFees",
+};
+
+export const financialReportsKeys = {
+  getAll: "getAll",
+};
+
+export const vehicleExpenseKeys = {
+  getAll: "getAll",
+  getAllPaginated: "getAllPaginated",
 };

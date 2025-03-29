@@ -1,8 +1,9 @@
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import useAuthStore from "../store/auth";
 import { FieldConfig } from "../types/comps";
 import { useNavigate } from "react-router-dom";
 import { App } from "antd";
+import { useEffect } from "react";
 
 interface UseLoginReturn {
   handleLogin: (values: any) => void;
@@ -14,6 +15,11 @@ const useLogin = (): UseLoginReturn => {
   const { signIn } = useAuthStore();
   const navigate = useNavigate();
   const { message } = App.useApp();
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    queryClient.invalidateQueries();
+  }, []);
 
   const formConfig: FieldConfig[] = [
     { name: "email", label: "Email", type: "email", required: true },

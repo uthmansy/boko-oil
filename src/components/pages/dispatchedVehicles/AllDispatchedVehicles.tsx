@@ -1,7 +1,7 @@
 import { Table } from "antd";
 import useDispatchedVehicles from "../../../hooks/useDispatchedVehicles"; // Use a hook for dispatched vehicles
 import { useVehicleColumns } from "../../../tableColumns/vehicles"; // Columns for dispatched vehicles
-import FormBuilder from "../../utils/FormBuilder";
+// import FormBuilder from "../../utils/FormBuilder";
 
 function AllDispatchedVehicles() {
   const {
@@ -10,15 +10,15 @@ function AllDispatchedVehicles() {
     fetchNextPage,
     isFetchingNextPage,
     isRefetching,
-    filterFormConfig,
-    handleSubmit,
+    // filterFormConfig,
+    // handleSubmit,
   } = useDispatchedVehicles(); // Use the correct hook for dispatched vehicles
 
   const { dispatchedColumns } = useVehicleColumns();
 
   return (
     <>
-      <FormBuilder
+      {/* <FormBuilder
         formConfig={filterFormConfig}
         onSubmit={handleSubmit}
         loading={isLoading}
@@ -28,14 +28,14 @@ function AllDispatchedVehicles() {
           gridTemplateColumns: "repeat(3, 1fr)",
           gap: "16px", // Optional: to add spacing between the columns
         }}
-      />
+      /> */}
       <Table
         size="small"
         loading={isLoading || isFetchingNextPage || isRefetching}
         columns={dispatchedColumns} // Use the correct columns for dispatched vehicles
         dataSource={vehicles}
         pagination={false} // Disable pagination
-        scroll={{ y: 600 }}
+        scroll={{ y: 450, x: "max-content" }}
         onScroll={(e) => {
           const target = e.target as HTMLDivElement;
           if (target.scrollHeight - target.scrollTop === target.clientHeight) {

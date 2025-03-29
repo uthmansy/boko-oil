@@ -1,7 +1,7 @@
 import { Table } from "antd";
 import useTransit from "../../../hooks/useTransit";
 import { useVehicleColumns } from "../../../tableColumns/vehicles";
-import FormBuilder from "../../utils/FormBuilder";
+// import FormBuilder from "../../utils/FormBuilder";
 
 function AllTransit() {
   const {
@@ -10,15 +10,15 @@ function AllTransit() {
     fetchNextPage,
     isFetchingNextPage,
     isRefetching,
-    filterFormConfig,
-    handleSubmit,
+    // filterFormConfig,
+    // handleSubmit,
   } = useTransit();
 
   const { transitColumns } = useVehicleColumns();
 
   return (
     <>
-      <FormBuilder
+      {/* <FormBuilder
         formConfig={filterFormConfig}
         onSubmit={handleSubmit}
         loading={isLoading}
@@ -28,14 +28,15 @@ function AllTransit() {
           gridTemplateColumns: "repeat(4, 1fr)",
           gap: "16px", // Optional: to add spacing between the columns
         }}
-      />
+      /> */}
       <Table
         size="small"
         loading={isLoading || isFetchingNextPage || isRefetching}
         columns={transitColumns}
         dataSource={vehicles}
         pagination={false} // Disable pagination
-        scroll={{ y: 600 }}
+        scroll={{ y: 450, x: "max-content" }}
+        bordered
         onScroll={(e) => {
           const target = e.target as HTMLDivElement;
           if (target.scrollHeight - target.scrollTop === target.clientHeight) {

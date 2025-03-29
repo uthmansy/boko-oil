@@ -5,6 +5,7 @@ import { useMutation, useQueryClient } from "react-query";
 import useAuthStore from "../store/auth";
 import { RequestWithItems, UpdateRequests } from "../types/db";
 import { rejectRequest } from "../helpers/apiFunctions"; // Assuming you have or will create this API function
+import moment from "moment";
 
 interface Props {
   request: RequestWithItems;
@@ -37,7 +38,7 @@ function useRejectRequest({ request }: Props): HookReturn {
       try {
         const payload: UpdateRequests = {
           rejected_by: userProfile?.username,
-          date_rejected: Date.now().format("YYYY-MM-DD"),
+          date_rejected: moment(Date.now()).format("YYYY-MM-DD"),
           status: "rejected",
           id: request.id,
         };

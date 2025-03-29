@@ -17,6 +17,7 @@ export const useVehicleColumns = (): {
       title: "S.N",
       render: (_, __, index) => index + 1, // Calculate row number
       width: 40,
+      fixed: "left",
     },
     {
       title: "Date Loaded",
@@ -51,7 +52,7 @@ export const useVehicleColumns = (): {
       dataIndex: "qty_carried",
       key: "qty_carried",
       render: (text) => <span className="capitalize">{text}</span>,
-      width: 60,
+      width: 50,
     },
     ...((userProfile?.role === "SUPER ADMIN" || userProfile?.role === "ADMIN"
       ? [
@@ -60,7 +61,7 @@ export const useVehicleColumns = (): {
             dataIndex: "driver_number",
             key: "driver_number",
             render: (text) => <span className="capitalize">{text}</span>,
-            width: 120,
+            width: 80,
           },
         ]
       : []) as ColumnsType<VehiclesAndDestination>),
@@ -91,6 +92,15 @@ export const useVehicleColumns = (): {
         </span>
       ),
       width: 150,
+    },
+    {
+      title: "Driver Name",
+      dataIndex: "driver_name",
+      key: "driver_name",
+      render: (_, record) => (
+        <span className="capitalize">{record.driver_name || ""}</span>
+      ),
+      width: 80,
     },
     {
       title: "Action",

@@ -1,9 +1,9 @@
 import { ColumnsType } from "antd/es/table";
-import { Sales } from "../types/db"; // Ensure this matches the updated Sales type
+import { SalesAndPayments } from "../types/db"; // Ensure this matches the updated Sales type
 import { formatNumber } from "../helpers/functions";
 import TableActions from "../components/pages/sales/TableActions";
 
-export const salesAdminColumns: ColumnsType<Sales> = [
+export const salesAdminColumns: ColumnsType<SalesAndPayments> = [
   {
     title: "S.N",
     render: (_, __, index) => index + 1, // Calculate row number
@@ -35,7 +35,7 @@ export const salesAdminColumns: ColumnsType<Sales> = [
     dataIndex: "quantity",
     key: "quantity",
     render: (text) => (
-      <span className="italic">{`${formatNumber(text)} BAGS`}</span>
+      <span className="italic">{`${formatNumber(text)} Pieces`}</span>
     ),
     width: 120,
   },
@@ -45,7 +45,7 @@ export const salesAdminColumns: ColumnsType<Sales> = [
     key: "balance",
     render: (text) => (
       <span className="italic text-red-700">
-        {`${formatNumber(text)}`} bags
+        {`${formatNumber(text)}`} Pieces
       </span>
     ),
     width: 120,

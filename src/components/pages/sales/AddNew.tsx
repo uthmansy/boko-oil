@@ -12,16 +12,20 @@ function AddNew() {
   const {
     type, // Current type (internal/external)
     currentPage,
-    prevPage,
+    // prevPage,
     resetType,
     resetPagination,
+    nextPage,
+    setType,
   } = useSalesStore();
 
   useEffect(() => {
     // Initialize the store values
     resetType();
     resetPagination();
-  }, [resetType, resetPagination]);
+    setType("internal");
+    nextPage();
+  }, []);
 
   return (
     <>
@@ -36,11 +40,11 @@ function AddNew() {
       >
         <div>
           <Space className="mb-5">
-            {currentPage !== 1 && (
+            {/* {currentPage !== 1 && (
               <Button type="primary" onClick={prevPage}>
                 Back
               </Button>
-            )}
+            )} */}
             {currentPage === 3 && (
               <Button
                 type="primary"

@@ -4,17 +4,17 @@ import {
   useInfiniteQuery,
 } from "react-query";
 import { getAllSales } from "../helpers/apiFunctions"; // Update to sales API function
-import { Sales } from "../types/db"; // Update to sales type
+import { SalesAndPayments } from "../types/db"; // Update to sales type
 import { App } from "antd";
 import { salesKeys } from "../constants/QUERY_KEYS"; // Update to sales query keys
 import useAuthStore from "../store/auth";
 
 interface HookReturn {
-  sales: Sales[]; // Update to Sales array
+  sales: SalesAndPayments[]; // Update to Sales array
   isLoading: boolean;
   fetchNextPage: (
     options?: FetchNextPageOptions | undefined
-  ) => Promise<InfiniteQueryObserverResult<Sales[], unknown>>; // Update to Sales type
+  ) => Promise<InfiniteQueryObserverResult<SalesAndPayments[], unknown>>; // Update to Sales type
   hasNextPage: boolean | undefined;
   isFetchingNextPage: boolean;
   isRefetching: boolean;

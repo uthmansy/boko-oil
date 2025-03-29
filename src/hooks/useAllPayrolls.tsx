@@ -4,16 +4,16 @@ import {
   useInfiniteQuery,
 } from "react-query";
 import { getPayrolls } from "../helpers/apiFunctions"; // Updated import for payrolls
-import { Payrolls } from "../types/db"; // Updated type import
+import { PayrollsAndEmployees } from "../types/db"; // Updated type import
 import { App } from "antd";
 import { payrollKeys } from "../constants/QUERY_KEYS"; // Updated query keys import
 
 interface HookReturn {
-  payrolls: Payrolls[]; // Updated type
+  payrolls: PayrollsAndEmployees[]; // Updated type
   isLoading: boolean;
   fetchNextPage: (
     options?: FetchNextPageOptions | undefined
-  ) => Promise<InfiniteQueryObserverResult<Payrolls[], unknown>>; // Updated type
+  ) => Promise<InfiniteQueryObserverResult<PayrollsAndEmployees[], unknown>>; // Updated type
   hasNextPage: boolean | undefined;
   isFetchingNextPage: boolean;
   isRefetching: boolean;

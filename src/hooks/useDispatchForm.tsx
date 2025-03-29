@@ -65,7 +65,7 @@ function useDispatchForm(): HookReturn {
       return orders;
     },
     onError: () => {
-      message.error("Failed to Load Inventory warehouses");
+      message.error("Failed to Load Sale Orders");
     },
   });
 
@@ -109,11 +109,11 @@ function useDispatchForm(): HookReturn {
 
     setSaleOrderOptions(
       filteredOrders?.map((order) => ({
-        label: `${order.customer_name} - ${order.item_purchased} - ${order.balance}bags remain`,
+        label: `${order.customer_name} - ${order.item_purchased} - ${order.balance}Pieces remain`,
         value: order.order_number,
       })) || []
     );
-  }, [saleOrders]);
+  }, [saleOrders, fromExternalStock]);
 
   const { data: origins } = useQuery({
     queryKey: externalStocksKeys.getItemExternalRecord,
@@ -144,7 +144,7 @@ function useDispatchForm(): HookReturn {
         stock.stock_purchases.seller
       } (${
         toCustomer ? stock.balance : stock.balance - stock.totalSoldBalance
-      } bags Available)`,
+      } Pieces Available)`,
       value: stock.id,
     })) || [];
 
@@ -157,7 +157,7 @@ function useDispatchForm(): HookReturn {
             type: "select",
             options:
               transferOrders?.map((order) => ({
-                label: `${order.quantity} bags ${order.item} to ${order.destinationStock.warehouse}`,
+                label: `${order.quantity} Pieces ${order.item} to ${order.destinationStock.warehouse}`,
                 value: order.id,
               })) || [],
             required: true,
@@ -204,7 +204,7 @@ function useDispatchForm(): HookReturn {
     },
     {
       name: "origin_state",
-      label: "State",
+      label: "Origin State",
       type: "select",
       options: STATES.map((state) => ({
         label: state.charAt(0).toUpperCase() + state.slice(1).toLowerCase(),
@@ -273,7 +273,7 @@ function useDispatchForm(): HookReturn {
       name: "qty_carried",
       label: "Quantity Carried",
       type: "number",
-      suffix: "BAGS",
+      // suffix: "Pieces",
       required: true,
       dependencies: [
         "sale_order_number",
@@ -343,7 +343,7 @@ function useDispatchForm(): HookReturn {
         {
           pattern: /^[A-Z]{3}-\d{3}[A-Z]{2}$/,
           message:
-            "Invalid vehicle number format. It should be in the format ABC-123DE",
+            "Invalid vehicle number format. It should be in the format ABC-123DE and UPPERCASE",
         },
       ],
     },

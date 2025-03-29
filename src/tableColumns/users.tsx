@@ -7,7 +7,7 @@ export const userAdminColumns: ColumnsType<UserProfile> = [
   {
     title: "S.N",
     render: (_, __, index) => index + 1, // Calculate row number
-    width: "5%",
+    width: 40,
   },
   {
     title: "Full Name",

@@ -8,7 +8,6 @@ import { getItemExternalRecord, getItemsNames } from "../helpers/apiFunctions";
 import { useEffect, useState } from "react";
 import { ExternalStocksAndPurchases } from "../types/db";
 import {
-  bagsToTons,
   formatDateString,
   formatNumber,
   getDayFromDate,
@@ -69,10 +68,7 @@ function useExternalStockRecordss(): HookReturn {
         children: (
           <div className="flex">
             <span className="w-1/2">
-              {formatNumber(record.balance || 0)} BAGS
-            </span>
-            <span className="w-1/2">
-              {formatNumber(bagsToTons(record.balance || 0))} MTS
+              {formatNumber(record.balance || 0)} {record.item_info.item.unit}
             </span>
           </div>
         ),
@@ -88,10 +84,8 @@ function useExternalStockRecordss(): HookReturn {
         children: (
           <div className="flex">
             <span className="w-1/2">
-              {formatNumber(record.dispatched || 0)} BAGS
-            </span>
-            <span className="w-1/2">
-              {formatNumber(bagsToTons(record.dispatched || 0))} MTS
+              {formatNumber(record.dispatched || 0)}{" "}
+              {record.item_info.item.unit}
             </span>
           </div>
         ),

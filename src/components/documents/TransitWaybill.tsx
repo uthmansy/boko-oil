@@ -10,7 +10,7 @@ import {
 import { VehiclesAndDestination } from "../../types/db"; // Ensure this import is correct based on your project structure
 import { COMPANY } from "../../constants/COMPANY";
 import { LOGO } from "../../assets/images";
-import { bagsToTons, formatNumber } from "../../helpers/functions";
+import { formatNumber } from "../../helpers/functions";
 
 // Define styles for the PDF document
 const styles = StyleSheet.create({
@@ -20,6 +20,7 @@ const styles = StyleSheet.create({
     fontSize: 8,
     lineHeight: 1.5,
     fontFamily: "Helvetica",
+    backgroundColor: "#aee7f8",
   },
   header: {
     textAlign: "center",
@@ -127,10 +128,13 @@ const styles = StyleSheet.create({
   },
   watermark: {
     position: "absolute",
-    top: "25%",
-    left: "15%",
-    width: "85%",
-    height: "auto",
+    top: "0%",
+    left: "0%",
+    right: "-10%",
+    bottom: "-10%",
+    // bottom: "0%",
+    // width: "100%",
+    // height: "100%",
     opacity: 0.15, // Set opacity to make it a watermark
     zIndex: -1, // Ensure the watermark is behind the content
   },
@@ -193,8 +197,6 @@ const TransitWaybill: React.FC<TransitWaybillProps> = ({
   return (
     <Document>
       <Page size="A4" style={styles.page}>
-        {/* Watermark Logo */}
-        <Image src={LOGO} style={styles.watermark} />
         <View style={styles.topWaybillNumber}>
           <Text>{data.waybill_number}</Text>
         </View>
@@ -228,13 +230,13 @@ const TransitWaybill: React.FC<TransitWaybillProps> = ({
               <View style={styles.verticalRow}>
                 <Text style={styles.label}>Destination:</Text>
                 <Text style={styles.value}>
-                  {data.destination_stock.warehouse}
+                  {data.destination_stock?.warehouse || ""}
                 </Text>
               </View>
               <View style={styles.verticalRow}>
                 <Text style={styles.label}>Address:</Text>
                 <Text style={styles.value}>
-                  {data.destination_stock.warehouse_info.address}
+                  {data.destination_stock?.warehouse_info.address || ""}
                 </Text>
               </View>
               <View style={styles.verticalRow}>
@@ -244,7 +246,8 @@ const TransitWaybill: React.FC<TransitWaybillProps> = ({
               <View style={styles.verticalRow}>
                 <Text style={styles.label}>Receiver Phone:</Text>
                 <Text style={styles.value}>
-                  {data.destination_stock.warehouse_info.stock_receiver_phone}
+                  {data.destination_stock?.warehouse_info
+                    .stock_receiver_phone || ""}
                 </Text>
               </View>
             </View>
@@ -254,7 +257,7 @@ const TransitWaybill: React.FC<TransitWaybillProps> = ({
                 <Text style={styles.value}>{data.waybill_number}</Text>
               </View>
               <View style={styles.verticalRow}>
-                <Text style={styles.label}>Sancham Number:</Text>
+                <Text style={styles.label}>Other Number:</Text>
                 <Text style={styles.value}>{data.other_waybill_number}</Text>
               </View>
               <View style={styles.verticalRow}>
@@ -279,8 +282,8 @@ const TransitWaybill: React.FC<TransitWaybillProps> = ({
                 <Text style={styles.label}>Origin:</Text>
                 <Text style={styles.value}>
                   {data.from_external_stock
-                    ? data.external_origin_stock.stock_purchases.seller
-                    : data.origin_stock.warehouse}
+                    ? data.external_origin_stock?.stock_purchases.seller || ""
+                    : data.origin_stock?.warehouse || ""}
                 </Text>
               </View>
               <View style={styles.verticalRow}>
@@ -297,19 +300,19 @@ const TransitWaybill: React.FC<TransitWaybillProps> = ({
             <View style={styles.verticalRow}>
               <Text style={styles.label}>Transport Fee:</Text>
               <Text style={styles.value}>
-                ₦{data.transport_fee && formatNumber(data.transport_fee)}
+                N{data.transport_fee && formatNumber(data.transport_fee)}
               </Text>
             </View>
             <View style={styles.verticalRow}>
               <Text style={styles.label}>Transport Fee Paid:</Text>
               <Text style={styles.value}>
-                ₦{data.paid_on_dispatch && formatNumber(data.paid_on_dispatch)}
+                N{data.paid_on_dispatch && formatNumber(data.paid_on_dispatch)}
               </Text>
             </View>
             <View style={styles.verticalRow}>
               <Text style={styles.label}>Transport Fee Balance:</Text>
               <Text style={styles.value}>
-                ₦
+                N
                 {data.transport_fee &&
                   data.paid_on_dispatch &&
                   formatNumber(data.transport_fee - data.paid_on_dispatch)}
@@ -318,19 +321,14 @@ const TransitWaybill: React.FC<TransitWaybillProps> = ({
           </View>
           <View style={styles.verticalTable}>
             <View style={styles.verticalRow}>
-              <Text style={styles.label}>UNIT Number:</Text>
+              <Text style={styles.label}>UNIT:</Text>
               <Text style={styles.value}>QUANTITY DISPATCHED</Text>
               <Text style={styles.value}>QUANTITY RECEIVED</Text>
             </View>
             <View style={styles.verticalRow}>
-              <Text style={styles.label}>BAGS:</Text>
-              <Text style={styles.value}>{data.qty_carried} BAGS</Text>
-              <Text style={styles.value}></Text>
-            </View>
-            <View style={styles.verticalRow}>
-              <Text style={styles.label}>MTS:</Text>
+              <Text style={styles.label}>{data.item_info.unit}s:</Text>
               <Text style={styles.value}>
-                {bagsToTons(data.qty_carried)} MTS
+                {data.qty_carried} {data.item_info.unit}
               </Text>
               <Text style={styles.value}></Text>
             </View>

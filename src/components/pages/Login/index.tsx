@@ -1,4 +1,4 @@
-import { Button } from "antd";
+import { Button, theme } from "antd";
 import { useNavigate } from "react-router-dom";
 import useLogin from "../../../hooks/useLogin";
 import FormBuilder from "../../utils/FormBuilder";
@@ -7,15 +7,21 @@ import { LOGO } from "../../../assets/images";
 const Login = () => {
   const { formConfig, handleLogin, isLoading } = useLogin();
   const navigate = useNavigate();
+  const {
+    token: { colorBgContainer, colorBgSpotlight },
+  } = theme.useToken();
 
   return (
-    <div className="relative flex items-center justify-center min-h-screen bg-gray-100">
+    <div
+      className="relative flex items-center justify-center min-h-screen"
+      style={{ background: colorBgContainer }}
+    >
       {/* Background Image Overlay */}
       <div
         className="absolute inset-0"
         style={{
           backgroundImage: `url(${LOGO})`,
-          backgroundSize: "75%", // Adjust the size as needed
+          backgroundSize: "100%", // Adjust the size as needed
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
           backgroundAttachment: "fixed",
@@ -29,6 +35,7 @@ const Login = () => {
         style={{
           margin: "24px 16px",
           minHeight: 320,
+          background: colorBgSpotlight,
         }}
       >
         <h2 className="text-center mb-3 font-semibold">PORTAL LOGIN</h2>
@@ -36,7 +43,7 @@ const Login = () => {
           <img
             src={LOGO}
             alt="Company Logo"
-            className="h-48 w-48 border rounded-md" // Adjusted logo size
+            className="h-auto w-48 border rounded-md" // Adjusted logo size
           />
         </div>
         <FormBuilder

@@ -9,27 +9,35 @@ function InternalDispatch() {
   // Changed the component name
   const {
     currentPage,
-    prevPage,
+    // prevPage,
     resetValues,
     setFromExternalStock,
     newDispatchVehicle,
+    nextPage,
+    setToCustomer,
   } = useDispatchStore(); // Updated to use internal stock setting
 
-  useEffect(() => {
+  const reset = () => {
     resetValues();
     setFromExternalStock(false); // Set to internal stock
+    setToCustomer(true);
+    nextPage();
+  };
+
+  useEffect(() => {
+    reset();
   }, []);
 
   return (
     <div>
       <Space className="mb-5">
-        {currentPage !== 1 && currentPage !== 3 && (
+        {/* {currentPage !== 1 && currentPage !== 3 && (
           <Button type="primary" onClick={prevPage}>
             Back
           </Button>
-        )}
+        )} */}
         {currentPage == 3 && (
-          <Button type="primary" onClick={resetValues}>
+          <Button type="primary" onClick={reset}>
             Reset
           </Button>
         )}

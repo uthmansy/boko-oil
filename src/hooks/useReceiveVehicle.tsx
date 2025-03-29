@@ -53,14 +53,14 @@ function useReceiveVehicle({ vehicle }: Props): HookReturn {
       name: "paid_on_receive",
       label: "Transport Fee balance Paid",
       type: "money",
-      required: true,
+      required: false,
     },
-    {
-      name: "qty_received",
-      label: "Quantity Received",
-      type: "number",
-      required: true,
-    },
+    // {
+    //   name: "qty_received",
+    //   label: "Quantity Received",
+    //   type: "number",
+    //   required: true,
+    // },
     // {
     //   name: "shortage",
     //   label: "Shortage",
@@ -84,6 +84,7 @@ function useReceiveVehicle({ vehicle }: Props): HookReturn {
       try {
         values.date_received = values.date_received.format("YYYY-MM-DD");
         values.received_by = userProfile?.username;
+        values.qty_received = vehicle.qty_carried;
         const status: vehicleStatus = "received";
         values.status = status;
         values.id = vehicle.id;

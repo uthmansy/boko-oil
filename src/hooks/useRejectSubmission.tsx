@@ -5,6 +5,7 @@ import { useMutation, useQueryClient } from "react-query";
 import useAuthStore from "../store/auth";
 import { ProductSubmission, UpdateSubmission } from "../types/db"; // Update types
 import { rejectSubmission } from "../helpers/apiFunctions"; // Update API function import
+import moment from "moment";
 
 interface Props {
   submission: ProductSubmission; // Update prop type
@@ -37,7 +38,7 @@ function useRejectSubmission({ submission }: Props): HookReturn {
       try {
         const payload: UpdateSubmission = {
           rejected_by: userProfile?.username,
-          date_rejected: Date.now().format("YYYY-MM-DD"),
+          date_rejected: moment(Date.now()).format("YYYY-MM-DD"),
           status: "rejected",
           id: submission.id, // Update to use submission ID
         };

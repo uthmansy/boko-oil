@@ -55,7 +55,7 @@ function ViewPayroll({ payroll }: Props) {
           columns={employeePayrollAdminColumns} // Use payroll columns
           dataSource={payroll.employeePayrolls}
           pagination={false} // Disable pagination
-          scroll={{ y: 600 }}
+          scroll={{ y: 450, x: "max-content" }}
           onScroll={(e) => {
             const target = e.target as HTMLDivElement;
             if (

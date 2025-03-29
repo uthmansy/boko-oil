@@ -1,16 +1,19 @@
 import { Space } from "antd";
 import AddPayment from "./AddPayment";
 import ViewPayments from "./ViewPayments";
+import Record from "./Record";
+import { PurchasesAndPayments } from "../../../types/db";
 
 interface Props {
-  orderNumber: string;
+  purchase: PurchasesAndPayments;
 }
 
-function TableActions({ orderNumber }: Props) {
+function TableActions({ purchase }: Props) {
   return (
     <Space size="small">
-      <AddPayment orderNumber={orderNumber} />
-      <ViewPayments orderNumber={orderNumber} />
+      <AddPayment orderNumber={purchase.order_number} />
+      <ViewPayments orderNumber={purchase.order_number} />
+      <Record purchase={purchase} />
     </Space>
   );
 }

@@ -59,6 +59,12 @@ function useAddSalesPayment({ orderNumber }: Props): HookReturn {
       required: true,
     },
     {
+      name: "account_name",
+      label: "Account Name",
+      type: "text",
+      required: false,
+    },
+    {
       name: "bank_name",
       label: "Bank Name",
       type: "text",

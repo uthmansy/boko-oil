@@ -59,6 +59,12 @@ function useAddNewInventoryItem(): HookReturn {
       options: itemTypeOptions,
       required: true,
     },
+    {
+      name: "unit",
+      label: "Unit",
+      type: "text",
+      required: true,
+    },
   ];
 
   const { mutate: handleSubmit, isLoading } = useMutation({

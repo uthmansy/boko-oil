@@ -29,10 +29,12 @@ function useAddNewPurchase(): HookReturn {
   };
 
   const { data: items } = useQuery({
-    queryKey: inventoryItemsKeys.getAllItems,
+    queryKey: inventoryItemsKeys.getAllRaws,
     queryFn: async (): Promise<SelectOption[]> => {
       const items = await getInventoryItems();
-      return items.map((item) => ({ label: item.name, value: item.name }));
+      return items
+        .filter((item) => item.type === "raw")
+        .map((item) => ({ label: item.name, value: item.name }));
     },
     onError: () => {
       message.error("Failed to Load Inventory Items");
@@ -63,7 +65,7 @@ function useAddNewPurchase(): HookReturn {
       name: "quantity",
       label: "Quantity",
       type: "number",
-      suffix: "BAGS",
+      suffix: "TONNE",
       required: true,
     },
     {

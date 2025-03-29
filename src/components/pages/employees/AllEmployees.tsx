@@ -18,7 +18,7 @@ function AllEmployees() {
       columns={employeesAdminColumns}
       dataSource={employees}
       pagination={false} // Disable pagination
-      scroll={{ y: 600 }}
+      scroll={{ y: 450, x: "max-content" }}
       onScroll={(e) => {
         const target = e.target as HTMLDivElement;
         if (target.scrollHeight - target.scrollTop === target.clientHeight) {

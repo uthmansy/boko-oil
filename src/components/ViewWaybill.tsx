@@ -4,10 +4,11 @@ import DocumentViewer from "./utils/DocumentViewer";
 import TransitWaybill from "./documents/TransitWaybill";
 import { VehiclesAndDestination } from "../types/db";
 import ReceivedWaybill from "./pages/receivedVehicles/ReceivedWaybill";
+import ViewInfo from "./pages/receivedVehicles/ViewInfo";
 
 interface Props {
   vehicle: VehiclesAndDestination;
-  type: "transit" | "received" | "dispatched";
+  type: "transit" | "received" | "dispatched" | "info";
 }
 
 function ViewWaybill({ vehicle, type }: Props) {
@@ -17,7 +18,7 @@ function ViewWaybill({ vehicle, type }: Props) {
   return (
     <>
       <Button onClick={handleOpenModal} type="default">
-        Waybill
+        {type === "info" ? "View Info" : "Waybill"}
       </Button>
       <Modal
         footer={null}
@@ -32,6 +33,8 @@ function ViewWaybill({ vehicle, type }: Props) {
             <TransitWaybill data={vehicle} qrCodeDataUri={qrCodeDataUri} />
           ) : type === "received" ? (
             <ReceivedWaybill data={vehicle} qrCodeDataUri={qrCodeDataUri} />
+          ) : type === "info" ? (
+            <ViewInfo data={vehicle} qrCodeDataUri={qrCodeDataUri} />
           ) : (
             <TransitWaybill data={vehicle} qrCodeDataUri={qrCodeDataUri} />
           )}

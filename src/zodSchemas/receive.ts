@@ -15,7 +15,7 @@ export const ReceiveSchema = z.object({
       }
     )
     .optional(),
-  paid_on_receive: z.number(),
+  paid_on_receive: z.number().optional(),
   qty_received: z.number(),
   received_by: z.string(),
   status: z.enum(["received"]),

@@ -5,7 +5,7 @@ export const departmentsAdminColumns: ColumnsType<Departments> = [
   {
     title: "S.N",
     render: (_, __, index) => index + 1, // Calculate row number
-    width: "5%",
+    width: 40,
   },
   {
     title: "Name",

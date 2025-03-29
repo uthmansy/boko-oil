@@ -1,5 +1,8 @@
 import { supabase } from "../lib/supabase";
+import { FinancialReport } from "../types/api";
 import {
+  Damages,
+  DamagesWithDetails,
   Departments,
   Employees,
   Enrollment,
@@ -10,6 +13,7 @@ import {
   InsertEnrollment,
   InsertExpenses,
   InsertPayrolls,
+  InsertVehicleExpense,
   InventoryItems,
   InventoryTransferInsert,
   InventoryTransferWithStocks,
@@ -19,19 +23,24 @@ import {
   ProductionWithItems,
   PurchasePayments,
   Purchases,
+  PurchasesAndPayments,
   RequestWithItems,
   Sales,
+  SalesAndPayments,
   SalesPayments,
   Stocks,
+  StocksWithDetails,
   UpdateEmployeePayroll,
   UpdateEmployees,
   UpdateExpenses,
+  UpdateInventoryItems,
   UpdatePayrolls,
   UpdateRequests,
   UpdateSubmission,
   UpdateUserProfile,
   UpdateVehicles,
   UserProfile,
+  VehicleExpensesDetails,
   Vehicles,
   VehiclesAndDestination,
   Warehouses,
@@ -49,7 +58,7 @@ export const getAllWarehouses = async (
   const { data, error } = await supabase
     .from("warehouses")
     .select("*")
-    .range((pageNumber - 1) * 10, pageNumber * 10 - 1)
+    .range((pageNumber - 1) * 20, pageNumber * 20 - 1)
     .order("created_at", { ascending: false });
 
   if (error) throw error.message;
@@ -59,11 +68,11 @@ export const getAllWarehouses = async (
 
 export const getAllStockPurchases = async (
   pageNumber: number = 1
-): Promise<Purchases[]> => {
+): Promise<PurchasesAndPayments[]> => {
   const { data, error } = await supabase
     .from("stock_purchases")
-    .select("*")
-    .range((pageNumber - 1) * 10, pageNumber * 10 - 1)
+    .select("*, payments:purchase_order_payments (*)")
+    .range((pageNumber - 1) * 20, pageNumber * 20 - 1)
     .order("created_at", { ascending: false });
 
   if (error) throw error.message;
@@ -77,7 +86,7 @@ export const getDepartments = async (
   const { data, error } = await supabase
     .from("departments")
     .select("*")
-    .range((pageNumber - 1) * 10, pageNumber * 10 - 1)
+    .range((pageNumber - 1) * 20, pageNumber * 20 - 1)
     .order("created_at", { ascending: false });
 
   if (error) throw error.message;
@@ -91,7 +100,7 @@ export const getEnrollments = async (
   const { data, error } = await supabase
     .from("user_enrollment")
     .select("*")
-    .range((pageNumber - 1) * 10, pageNumber * 10 - 1)
+    .range((pageNumber - 1) * 20, pageNumber * 20 - 1)
     .order("created_at", { ascending: false });
 
   if (error) throw error.message;
@@ -111,7 +120,7 @@ export const getExpenses = async (
 
   // Apply ordering and pagination after filtering
   query = query
-    .range((pageNumber - 1) * 10, pageNumber * 10 - 1)
+    .range((pageNumber - 1) * 20, pageNumber * 20 - 1)
     .order("created_at", { ascending: false });
 
   const { data, error } = await query;
@@ -127,7 +136,7 @@ export const getPayrolls = async (
   const { data, error } = await supabase
     .from("payrolls")
     .select("*, employeePayrolls:employee_payroll(*, employee:employee_id(*))")
-    .range((pageNumber - 1) * 10, pageNumber * 10 - 1)
+    .range((pageNumber - 1) * 20, pageNumber * 20 - 1)
     .order("created_at", { ascending: false });
 
   if (error) throw error.message;
@@ -141,7 +150,7 @@ export const getPositions = async (
   const { data, error } = await supabase
     .from("positions")
     .select("*")
-    .range((pageNumber - 1) * 10, pageNumber * 10 - 1)
+    .range((pageNumber - 1) * 20, pageNumber * 20 - 1)
     .order("created_at", { ascending: false });
 
   if (error) throw error.message;
@@ -153,11 +162,34 @@ export const getAllSales = async (
   pageNumber: number = 1,
   isAdmin: boolean,
   warehouse?: string | null
-): Promise<Sales[]> => {
+): Promise<SalesAndPayments[]> => {
   let query = supabase
     .from("sales")
-    .select("*")
-    .range((pageNumber - 1) * 10, pageNumber * 10 - 1)
+    .select("*, payments:sales_payments (*)")
+    .range((pageNumber - 1) * 20, pageNumber * 20 - 1)
+    .order("created_at", { ascending: false });
+
+  // If not an admin, apply the warehouse filter if it's provided
+  if (!isAdmin && warehouse) {
+    query = query.eq("warehouse", warehouse);
+  }
+
+  const { data, error } = await query;
+
+  if (error) throw error.message;
+
+  return data;
+};
+
+export const getAllDamages = async (
+  pageNumber: number = 1,
+  isAdmin: boolean,
+  warehouse?: string | null
+): Promise<DamagesWithDetails[]> => {
+  let query = supabase
+    .from("damages")
+    .select("*, added_by_info:added_by (*)")
+    .range((pageNumber - 1) * 20, pageNumber * 20 - 1)
     .order("created_at", { ascending: false });
 
   // If not an admin, apply the warehouse filter if it's provided
@@ -178,7 +210,7 @@ export const getUsers = async (
   const { data, error } = await supabase
     .from("profiles")
     .select("*")
-    .range((pageNumber - 1) * 10, pageNumber * 10 - 1)
+    .range((pageNumber - 1) * 20, pageNumber * 20 - 1)
     .order("created_at", { ascending: false });
 
   if (error) throw error.message;
@@ -193,7 +225,21 @@ export const getUncompletedSales = async (
     .from("sales")
     .select("*")
     .gt("balance", 0)
-    .range((pageNumber - 1) * 10, pageNumber * 10 - 1)
+    .range((pageNumber - 1) * 20, pageNumber * 20 - 1)
+    .order("created_at", { ascending: false });
+
+  if (error) throw error.message;
+
+  return data;
+};
+
+export const getAllVehicleExpenses = async (
+  pageNumber: number = 1
+): Promise<VehicleExpensesDetails[]> => {
+  const { data, error } = await supabase
+    .from("vehicle_expenses")
+    .select("*, vehicle_details:vehicle_id(*), added_by_details:added_by(*)")
+    .range((pageNumber - 1) * 20, pageNumber * 20 - 1)
     .order("created_at", { ascending: false });
 
   if (error) throw error.message;
@@ -235,7 +281,7 @@ export const getVehicles = async (
   let query = supabase
     .from("vehicles")
     .select(
-      "*, receive_officer_info:received_by (*), dispatch_officer_info:dispatched_by (*), destination_stock:destination!inner(*, warehouse_info:warehouse (*)), origin_stock:origin_stock_id (*), external_origin_stock:external_origin_id (*, stock_purchases:order_number (*))"
+      "*, item_info:item(*), vehicle_expenses(*), receive_officer_info:received_by (*), dispatch_officer_info:dispatched_by (*), destination_stock:destination!inner(*, warehouse_info:warehouse (*)), origin_stock:origin_stock_id (*), external_origin_stock:external_origin_id (*, stock_purchases:order_number (*))"
     )
     .eq("status", status);
 
@@ -244,7 +290,7 @@ export const getVehicles = async (
     query = supabase
       .from("vehicles")
       .select(
-        "*, receive_officer_info:received_by (*), dispatch_officer_info:dispatched_by (*), destination_stock:destination!left(*, warehouse_info:warehouse (*)), sale:sale_order_number (*), origin_stock:origin_stock_id (*), external_origin_stock:external_origin_id (*, stock_purchases:order_number (*))"
+        "*, item_info:item(*), vehicle_expenses(*), receive_officer_info:received_by (*), dispatch_officer_info:dispatched_by (*), destination_stock:destination!left(*, warehouse_info:warehouse (*)), sale:sale_order_number (*), origin_stock:origin_stock_id (*), external_origin_stock:external_origin_id (*, stock_purchases:order_number (*))"
       )
       .eq("status", status);
   }
@@ -272,7 +318,7 @@ export const getVehicles = async (
   // Apply ordering and pagination after filtering
   query = query
     .order("created_at", { ascending: false })
-    .range((pageNumber - 1) * 10, pageNumber * 10 - 1);
+    .range((pageNumber - 1) * 20, pageNumber * 20 - 1);
 
   const { data, error } = await query;
 
@@ -282,7 +328,7 @@ export const getVehicles = async (
 
 export const getVehicleByWaybill = async (
   waybillNumber: string
-): Promise<VehiclesAndDestination> => {
+): Promise<VehiclesAndDestination | undefined> => {
   let query = supabase
     .from("vehicles")
     .select(
@@ -303,7 +349,7 @@ export const getAllRequests = async (
   const { data, error } = await supabase
     .from("requests")
     .select("*, request_items (*)")
-    .range((pageNumber - 1) * 10, pageNumber * 10 - 1)
+    .range((pageNumber - 1) * 20, pageNumber * 20 - 1)
     .order("created_at", { ascending: false });
 
   if (error) throw error.message;
@@ -317,7 +363,7 @@ export const getEmployees = async (
   const { data, error } = await supabase
     .from("employees")
     .select("*")
-    .range((pageNumber - 1) * 10, pageNumber * 10 - 1)
+    .range((pageNumber - 1) * 20, pageNumber * 20 - 1)
     .order("created_at", { ascending: false });
 
   if (error) throw error.message;
@@ -333,7 +379,7 @@ export const getInventoryTransfers = async (
     .select(
       "*, originStock:origin_stock_id (*), destinationStock:destination_stock_id (*), createdBy:created_by (*)"
     )
-    .range((pageNumber - 1) * 10, pageNumber * 10 - 1)
+    .range((pageNumber - 1) * 20, pageNumber * 20 - 1)
     .order("created_at", { ascending: false });
 
   if (error) throw error.message;
@@ -378,7 +424,7 @@ export const getAllProductSubmissions = async (
   const { data, error } = await supabase
     .from("product_submission")
     .select("*")
-    .range((pageNumber - 1) * 10, pageNumber * 10 - 1)
+    .range((pageNumber - 1) * 20, pageNumber * 20 - 1)
     .order("created_at", { ascending: false });
 
   if (error) throw error.message;
@@ -392,7 +438,7 @@ export const getAllProductions = async (
   const { data, error } = await supabase
     .from("production_runs")
     .select("*, production_raw_materials (*)")
-    .range((pageNumber - 1) * 10, pageNumber * 10 - 1)
+    .range((pageNumber - 1) * 20, pageNumber * 20 - 1)
     .order("created_at", { ascending: false });
 
   if (error) throw error.message;
@@ -408,7 +454,7 @@ export const getAllPurchasePayments = async (
     .from("purchase_order_payments")
     .select("*")
     .eq("order_number", orderNumber) // Filter by order_number
-    .range((pageNumber - 1) * 10, pageNumber * 10 - 1)
+    .range((pageNumber - 1) * 20, pageNumber * 20 - 1)
     .order("created_at", { ascending: false });
 
   if (error) throw error.message;
@@ -424,7 +470,7 @@ export const getAllSalesPayments = async (
     .from("sales_payments")
     .select("*")
     .eq("order_number", orderNumber) // Filter by order_number
-    .range((pageNumber - 1) * 10, pageNumber * 10 - 1)
+    .range((pageNumber - 1) * 20, pageNumber * 20 - 1)
     .order("created_at", { ascending: false });
 
   if (error) throw error.message;
@@ -438,7 +484,7 @@ export const getAllInventoryItems = async (
   const { data, error } = await supabase
     .from("inventory_items")
     .select("*")
-    .range((pageNumber - 1) * 10, pageNumber * 10 - 1)
+    .range((pageNumber - 1) * 20, pageNumber * 20 - 1)
     .order("created_at", { ascending: false });
 
   if (error) throw error.message;
@@ -515,10 +561,10 @@ export const getItemsNames = async (): Promise<{ name: string }[]> => {
 export const getItemRecord = async (
   warehouse: string,
   item: string
-): Promise<Stocks> => {
+): Promise<StocksWithDetails> => {
   const { data, error } = await supabase
     .from("stocks")
-    .select("*")
+    .select("*, item_info:item(*)")
     .eq("warehouse", warehouse)
     .eq("item", item)
     .single();
@@ -558,7 +604,7 @@ export const getItemExternalRecord = async (
 ): Promise<ExternalStocksAndPurchases[]> => {
   const { data, error } = await supabase
     .from("external_stocks")
-    .select("*, stock_purchases!inner(*)")
+    .select("*, stock_purchases!inner(*), item_info:order_number(item(*))")
     .eq("stock_purchases.item", item);
 
   if (error) throw error.message;
@@ -612,6 +658,11 @@ export const addWarehouse = async (payload: Warehouses): Promise<void> => {
 
   if (error) throw new Error(error.message);
 };
+export const addDamage = async (payload: Damages): Promise<void> => {
+  const { error } = await supabase.from("damages").insert([payload]);
+
+  if (error) throw new Error(error.message);
+};
 
 export const addDepartment = async (
   payload: InsertDepartments
@@ -660,7 +711,7 @@ export const addNewVehicle = async (
     .from("vehicles")
     .insert([payload])
     .select(
-      "*, receive_officer_info:received_by (*), dispatch_officer_info:dispatched_by (*), destination_stock:destination (*,  warehouse_info:warehouse (*)), origin_stock:origin_stock_id (*), external_origin_stock:external_origin_id (*, stock_purchases:order_number (*))"
+      "*, item_info:item (*), receive_officer_info:received_by (*), dispatch_officer_info:dispatched_by (*), destination_stock:destination (*,  warehouse_info:warehouse (*)), origin_stock:origin_stock_id (*), external_origin_stock:external_origin_id (*, stock_purchases:order_number (*))"
     )
     .single();
 
@@ -689,6 +740,14 @@ export const addPurchase = async (payload: Purchases): Promise<void> => {
   if (error) throw new Error(error.message);
 };
 
+export const addVehicleExpense = async (
+  payload: InsertVehicleExpense
+): Promise<void> => {
+  const { error } = await supabase.from("vehicle_expenses").insert([payload]);
+  if (error) console.error(error);
+  if (error) throw new Error(error.message);
+};
+
 export const addSale = async (payload: Sales): Promise<void> => {
   const { error } = await supabase.from("sales").insert([payload]);
   if (error) console.error(error);
@@ -705,12 +764,32 @@ export const receiveVehicle = async (
   if (error) console.error(error);
   if (error) throw new Error(error.message);
 };
+export const packageVehicle = async (
+  payload: UpdateVehicles
+): Promise<void> => {
+  const { error } = await supabase
+    .from("vehicles")
+    .update(payload)
+    .eq("id", payload.id);
+  if (error) console.error(error);
+  if (error) throw new Error(error.message);
+};
 
 export const updateEmployee = async (
   payload: UpdateEmployees
 ): Promise<void> => {
   const { error } = await supabase
     .from("employees")
+    .update(payload)
+    .eq("id", payload.id);
+  if (error) console.error(error);
+  if (error) throw new Error(error.message);
+};
+export const updateInventoryItem = async (
+  payload: UpdateInventoryItems
+): Promise<void> => {
+  const { error } = await supabase
+    .from("inventory_items")
     .update(payload)
     .eq("id", payload.id);
   if (error) console.error(error);
@@ -931,4 +1010,19 @@ export const addProductSubmission = async (
   const { error } = await supabase.from("product_submission").insert([payload]);
   if (error) console.error(error);
   if (error) throw new Error(error.message);
+};
+
+export const getMonthlyFinancialReprots = async (): Promise<
+  FinancialReport[]
+> => {
+  const { data, error } = await supabase.rpc(
+    "generate_monthly_financial_report"
+  );
+
+  if (error) {
+    throw new Error("Error fetching financial report");
+  }
+  console.log(data);
+
+  return data as FinancialReport[]; // Type assertion to FinancialReport array
 };

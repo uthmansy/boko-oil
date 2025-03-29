@@ -10,7 +10,7 @@ import {
 import { VehiclesAndDestination } from "../../../types/db";
 import { COMPANY } from "../../../constants/COMPANY";
 import { LOGO } from "../../../assets/images";
-import { bagsToTons, formatNumber } from "../../../helpers/functions";
+import { formatNumber } from "../../../helpers/functions";
 
 // Define styles for the PDF document
 const styles = StyleSheet.create({
@@ -20,6 +20,7 @@ const styles = StyleSheet.create({
     fontSize: 8,
     lineHeight: 1.5,
     fontFamily: "Helvetica",
+    backgroundColor: "#d8ffb1",
   },
   header: {
     textAlign: "center",
@@ -127,10 +128,13 @@ const styles = StyleSheet.create({
   },
   watermark: {
     position: "absolute",
-    top: "25%",
-    left: "15%",
-    width: "85%",
-    height: "auto",
+    top: "0%",
+    left: "0%",
+    right: "-10%",
+    bottom: "-10%",
+    // bottom: "0%",
+    // width: "100%",
+    // height: "100%",
     opacity: 0.15, // Set opacity to make it a watermark
     zIndex: -1, // Ensure the watermark is behind the content
   },
@@ -193,8 +197,6 @@ const ReceivedWaybill: React.FC<ReceivedWaybillProps> = ({
   return (
     <Document>
       <Page size="A4" style={styles.page}>
-        {/* Watermark Logo */}
-        <Image src={LOGO} style={styles.watermark} />
         <View style={styles.topWaybillNumber}>
           <Text>{data.waybill_number}</Text>
         </View>
@@ -254,7 +256,7 @@ const ReceivedWaybill: React.FC<ReceivedWaybillProps> = ({
                 <Text style={styles.value}>{data.waybill_number}</Text>
               </View>
               <View style={styles.verticalRow}>
-                <Text style={styles.label}>Sancham Number:</Text>
+                <Text style={styles.label}>Other Number:</Text>
                 <Text style={styles.value}>{data.other_waybill_number}</Text>
               </View>
               <View style={styles.verticalRow}>
@@ -323,24 +325,19 @@ const ReceivedWaybill: React.FC<ReceivedWaybillProps> = ({
               <Text style={styles.value}>QUANTITY RECEIVED</Text>
             </View>
             <View style={styles.verticalRow}>
-              <Text style={styles.label}>BAGS:</Text>
-              <Text style={styles.value}>{data.qty_carried} BAGS</Text>
-              <Text style={styles.value}>{data.qty_received} BAGS</Text>
-            </View>
-            <View style={styles.verticalRow}>
-              <Text style={styles.label}>MTS:</Text>
+              <Text style={styles.label}>{data.item_info.unit}:</Text>
               <Text style={styles.value}>
-                {bagsToTons(data.qty_carried)} MTS
+                {data.qty_carried} {data.item_info.unit}
               </Text>
               <Text style={styles.value}>
-                {data.qty_received && bagsToTons(data.qty_received)} MTS
+                {data.qty_received} {data.item_info.unit}
               </Text>
             </View>
-            <View style={styles.verticalRow}>
+            {/* <View style={styles.verticalRow}>
               <Text style={styles.label}>SHORTAGE:</Text>
               <Text style={styles.value}>{data.shortage} BAGS</Text>
               <Text style={styles.value}>{bagsToTons(data.shortage)} MTS</Text>
-            </View>
+            </View> */}
           </View>
           {/* Signature and Stamp Section */}
           <View style={styles.signatureStampContainer}>

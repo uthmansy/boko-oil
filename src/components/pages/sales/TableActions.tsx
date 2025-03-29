@@ -1,13 +1,14 @@
 import { Space } from "antd";
 import AddPayment from "./AddPayment";
 import ViewPayments from "./ViewPayments";
-import { Sales } from "../../../types/db";
+import { SalesAndPayments } from "../../../types/db";
 import DeleteSale from "./DeleteSale";
 import useAuthStore from "../../../store/auth";
+import Record from "./Record";
 
 interface Props {
   orderNumber: string;
-  sale: Sales;
+  sale: SalesAndPayments;
 }
 
 function TableActions({ orderNumber, sale }: Props) {
@@ -20,6 +21,7 @@ function TableActions({ orderNumber, sale }: Props) {
         <AddPayment orderNumber={orderNumber} />
       )}
       <ViewPayments sale={sale} orderNumber={orderNumber} />
+      <Record sale={sale} />
       {sale.quantity_taken === 0 &&
         (userProfile?.role === "SUPER ADMIN" ||
           userProfile?.role === "ADMIN") && <DeleteSale sale={sale} />}
