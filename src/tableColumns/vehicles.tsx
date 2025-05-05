@@ -3,6 +3,7 @@ import { VehiclesAndDestination } from "../types/db";
 import TransitTableActions from "../components/pages/transit/TransitTableActions";
 import useAuthStore from "../store/auth";
 import TableActions from "../components/pages/receivedVehicles/TableActions";
+import { formatNumber } from "../helpers/functions";
 
 export const useVehicleColumns = (): {
   transitColumns: ColumnsType<VehiclesAndDestination>;
@@ -24,35 +25,30 @@ export const useVehicleColumns = (): {
       dataIndex: "date_dispatched",
       key: "date_dispatched",
       render: (text) => <span className="capitalize">{text}</span>,
-      width: 100,
     },
     {
       title: "Vehicle Number",
       dataIndex: "vehicle_number",
       key: "vehicle_number",
       render: (text) => <span className="capitalize">{text}</span>,
-      width: 130,
     },
     {
       title: "Waybill Number",
       dataIndex: "waybill_number",
       key: "waybill_number",
       render: (text) => <span className="capitalize">{text}</span>,
-      width: 150,
     },
     {
       title: "ITEM",
       dataIndex: "item",
       key: "item",
       render: (text) => <span className="capitalize">{text}</span>,
-      width: 100,
     },
     {
       title: "QTY",
       dataIndex: "qty_carried",
       key: "qty_carried",
       render: (text) => <span className="capitalize">{text}</span>,
-      width: 50,
     },
     ...((userProfile?.role === "SUPER ADMIN" || userProfile?.role === "ADMIN"
       ? [
@@ -61,7 +57,6 @@ export const useVehicleColumns = (): {
             dataIndex: "driver_number",
             key: "driver_number",
             render: (text) => <span className="capitalize">{text}</span>,
-            width: 80,
           },
         ]
       : []) as ColumnsType<VehiclesAndDestination>),
@@ -75,7 +70,6 @@ export const useVehicleColumns = (): {
             record.origin_stock?.warehouse}
         </span>
       ),
-      width: 150,
     },
   ];
 
@@ -91,7 +85,6 @@ export const useVehicleColumns = (): {
           {record.destination_stock.warehouse || ""}
         </span>
       ),
-      width: 150,
     },
     {
       title: "Driver Name",
@@ -100,7 +93,6 @@ export const useVehicleColumns = (): {
       render: (_, record) => (
         <span className="capitalize">{record.driver_name || ""}</span>
       ),
-      width: 80,
     },
     {
       title: "Action",
@@ -118,13 +110,26 @@ export const useVehicleColumns = (): {
     //   render: (_, record) => <ReceivedTableActions vehicle={record} />,
     // },
     {
+      title: "Cost",
+      dataIndex: "cost",
+      key: "cost",
+      render: (_, record) => (
+        <span className="capitalize">
+          ₦
+          {formatNumber(
+            (record.external_origin_stock.stock_purchases.unit_price || 0) *
+              record.qty_carried
+          )}
+        </span>
+      ),
+    },
+    {
       title: "Destination",
       dataIndex: "destination_stock",
       key: "destination_stock",
       render: (destination_stock) => (
         <span className="capitalize">{destination_stock.warehouse || ""}</span>
       ),
-      width: 150,
     },
     {
       title: "Action",
@@ -141,7 +146,6 @@ export const useVehicleColumns = (): {
       render: (_, record) => (
         <span className="capitalize">{record.sale.customer_name || ""}</span>
       ),
-      width: 150,
     },
     // {
     //   title: "Action",

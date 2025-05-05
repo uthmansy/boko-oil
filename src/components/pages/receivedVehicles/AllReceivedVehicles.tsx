@@ -36,7 +36,7 @@ function AllReceivedVehicles() {
         columns={receivedColumns} // Use the correct columns for received vehicles
         dataSource={vehicles}
         pagination={false} // Disable pagination
-        scroll={{ y: 600, x: 1200 }}
+        scroll={{ y: 450, x: "max-content" }}
         onScroll={(e) => {
           const target = e.target as HTMLDivElement;
           if (target.scrollHeight - target.scrollTop === target.clientHeight) {

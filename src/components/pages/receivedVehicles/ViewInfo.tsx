@@ -286,6 +286,67 @@ const ViewInfo: React.FC<ViewInfoProps> = ({ data }) => {
               </Text>
             </View>
             <View style={styles.verticalRow}>
+              <Text style={styles.label}>Quantity Dispatched:</Text>
+              <Text style={styles.value}>
+                {formatNumber(data.qty_dispatched || 0)}
+              </Text>
+            </View>
+            <View style={styles.verticalRow}>
+              <Text style={styles.label}>Quantity Damaged:</Text>
+              <Text style={styles.value}>
+                {formatNumber(data.packaged_damage || 0)}
+              </Text>
+            </View>
+            <View style={styles.verticalRow}>
+              <Text style={styles.label}>Balance:</Text>
+              <Text style={styles.value}>
+                {formatNumber(data.packaged_balance || 0)}
+              </Text>
+            </View>
+            <View style={styles.verticalRow}>
+              <Text style={styles.label}>Cost:</Text>
+              <Text style={styles.value}>
+                N
+                {formatNumber(
+                  (data.external_origin_stock.stock_purchases.unit_price || 0) *
+                    data.qty_carried
+                )}
+              </Text>
+            </View>
+            <View style={styles.verticalRow}>
+              <Text style={styles.label}>Sold Value:</Text>
+              <Text style={styles.value}>N{formatNumber(data.sold_value)}</Text>
+            </View>
+            <View style={styles.verticalRow}>
+              <Text style={styles.label}>Total Expense:</Text>
+              <Text style={styles.value}>
+                N{formatNumber(data.total_expenses)}
+              </Text>
+            </View>
+            <View style={styles.verticalRow}>
+              <Text style={styles.label}>Profit/Loss:</Text>
+              <Text style={styles.value}>
+                N
+                {formatNumber(
+                  data.sold_value -
+                    (data.external_origin_stock.stock_purchases.unit_price ||
+                      0) *
+                      data.qty_carried -
+                    data.total_expenses
+                )}
+              </Text>
+            </View>
+            <View style={styles.verticalRow}>
+              <Text style={styles.label}>Residual Valuation:</Text>
+              <Text style={styles.value}>
+                N
+                {formatNumber(
+                  (data?.packaged_balance || 0) *
+                    (data.item_packaged_info.unit_price || 0)
+                )}
+              </Text>
+            </View>
+            <View style={styles.verticalRow}>
               <Text style={styles.label}>Vehicle Number:</Text>
               <Text style={styles.value}>{data.vehicle_number}</Text>
             </View>
@@ -332,6 +393,43 @@ const ViewInfo: React.FC<ViewInfoProps> = ({ data }) => {
                 <Text style={styles.value}>{expense.description}</Text>
                 <Text style={styles.value}>{expense.date}</Text>
                 <Text style={styles.value}>{expense.order_number}</Text>
+              </View>
+            ))}
+          </View>
+        </View>
+        <Text style={styles.label}>Sale Dispatches</Text>
+        <View style={{ borderColor: "#222222", borderWidth: 1, padding: 20 }}>
+          {/* Vertical Grouped Table */}
+          <View style={styles.storeTable}>
+            <View style={styles.verticalRow}>
+              <Text style={styles.label}>Date:</Text>
+              <Text style={styles.label}>Quantity</Text>
+              <Text style={styles.label}>Dispatch Price</Text>
+              <Text style={styles.label}>Amount</Text>
+              <Text style={styles.label}>Order Number</Text>
+              <Text style={styles.label}>Customer</Text>
+            </View>
+            {data.sale_dispatch.map((dispatch, index) => (
+              <View key={index} style={styles.verticalRow}>
+                <Text style={styles.value}>{dispatch.dispatch_date}:</Text>
+                <Text style={styles.value}>
+                  {formatNumber(dispatch.qty_dispatched)}:
+                </Text>
+                <Text style={styles.value}>
+                  N{formatNumber(dispatch.dispatch_price)}:
+                </Text>
+                <Text style={styles.value}>
+                  N
+                  {formatNumber(
+                    dispatch.dispatch_price * dispatch.qty_dispatched
+                  )}
+                </Text>
+                <Text style={styles.value}>
+                  {dispatch.sale_info.order_number}
+                </Text>
+                <Text style={styles.value}>
+                  {dispatch.sale_info.customer_name}
+                </Text>
               </View>
             ))}
           </View>

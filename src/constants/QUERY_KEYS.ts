@@ -64,6 +64,9 @@ export const vehiclesKeys = {
 export const requestsKeys = {
   getAllRequests: "getAllRequests",
 };
+export const saleDispatchKeys = {
+  getVehicleSaleDispatches: "getVehicleSaleDispatches",
+};
 export const productionsKeys = {
   getAllProductions: "getAllProductions",
 };

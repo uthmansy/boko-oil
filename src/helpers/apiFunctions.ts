@@ -25,6 +25,7 @@ import {
   Purchases,
   PurchasesAndPayments,
   RequestWithItems,
+  SaleDispatchJoined,
   Sales,
   SalesAndPayments,
   SalesPayments,
@@ -51,6 +52,8 @@ import {
   CreateProduction,
   CreateRequest,
 } from "../types/forms";
+import { EditVehicleType } from "../zodSchemas/editVehicle";
+import { SaleDispatch } from "../zodSchemas/saleDispatch";
 
 export const getAllWarehouses = async (
   pageNumber: number = 1
@@ -180,6 +183,23 @@ export const getAllSales = async (
 
   return data;
 };
+export const getAllSaleDispatches = async (
+  pageNumber: number = 1,
+  vehicle_id: string
+): Promise<SaleDispatchJoined[]> => {
+  let query = supabase
+    .from("sale_dispatch")
+    .select("*, vehicle_info:origin_vehicle (*), sale_info:sale_id(*)")
+    .eq("origin_vehicle", vehicle_id)
+    .range((pageNumber - 1) * 20, pageNumber * 20 - 1)
+    .order("created_at", { ascending: false });
+
+  const { data, error } = await query;
+
+  if (error) throw error.message;
+
+  return data;
+};
 
 export const getAllDamages = async (
   pageNumber: number = 1,
@@ -234,13 +254,18 @@ export const getUncompletedSales = async (
 };
 
 export const getAllVehicleExpenses = async (
-  pageNumber: number = 1
+  pageNumber: number = 1,
+  vehicle_id: string | undefined
 ): Promise<VehicleExpensesDetails[]> => {
-  const { data, error } = await supabase
+  let query = supabase
     .from("vehicle_expenses")
     .select("*, vehicle_details:vehicle_id(*), added_by_details:added_by(*)")
     .range((pageNumber - 1) * 20, pageNumber * 20 - 1)
     .order("created_at", { ascending: false });
+
+  if (vehicle_id) query = query.eq("vehicle_id", vehicle_id);
+
+  const { data, error } = await query;
 
   if (error) throw error.message;
 
@@ -281,7 +306,7 @@ export const getVehicles = async (
   let query = supabase
     .from("vehicles")
     .select(
-      "*, item_info:item(*), vehicle_expenses(*), receive_officer_info:received_by (*), dispatch_officer_info:dispatched_by (*), destination_stock:destination!inner(*, warehouse_info:warehouse (*)), origin_stock:origin_stock_id (*), external_origin_stock:external_origin_id (*, stock_purchases:order_number (*))"
+      "*, item_info:item(*), item_packaged_info:item_packaged(*), vehicle_expenses(*), sale_dispatch(*, vehicle_info:origin_vehicle(*), sale_info:sale_id(*)), receive_officer_info:received_by (*), dispatch_officer_info:dispatched_by (*), destination_stock:destination!inner(*, warehouse_info:warehouse (*)), origin_stock:origin_stock_id (*), external_origin_stock:external_origin_id (*, stock_purchases:order_number (*))"
     )
     .eq("status", status);
 
@@ -290,7 +315,7 @@ export const getVehicles = async (
     query = supabase
       .from("vehicles")
       .select(
-        "*, item_info:item(*), vehicle_expenses(*), receive_officer_info:received_by (*), dispatch_officer_info:dispatched_by (*), destination_stock:destination!left(*, warehouse_info:warehouse (*)), sale:sale_order_number (*), origin_stock:origin_stock_id (*), external_origin_stock:external_origin_id (*, stock_purchases:order_number (*))"
+        "*, item_info:item(*), item_packaged_info:item_packaged(*), vehicle_expenses(*), sale_dispatch(*, vehicle_info:origin_vehicle(*), sale_info:sale_id(*)), receive_officer_info:received_by (*), dispatch_officer_info:dispatched_by (*), destination_stock:destination!left(*, warehouse_info:warehouse (*)), sale:sale_order_number (*), origin_stock:origin_stock_id (*), external_origin_stock:external_origin_id (*, stock_purchases:order_number (*))"
       )
       .eq("status", status);
   }
@@ -663,6 +688,11 @@ export const addDamage = async (payload: Damages): Promise<void> => {
 
   if (error) throw new Error(error.message);
 };
+export const addSaleDispatch = async (payload: SaleDispatch): Promise<void> => {
+  const { error } = await supabase.from("sale_dispatch").insert([payload]);
+
+  if (error) throw new Error(error.message);
+};
 
 export const addDepartment = async (
   payload: InsertDepartments
@@ -790,6 +820,16 @@ export const updateInventoryItem = async (
 ): Promise<void> => {
   const { error } = await supabase
     .from("inventory_items")
+    .update(payload)
+    .eq("id", payload.id);
+  if (error) console.error(error);
+  if (error) throw new Error(error.message);
+};
+export const updateVehicle = async (
+  payload: EditVehicleType
+): Promise<void> => {
+  const { error } = await supabase
+    .from("vehicles")
     .update(payload)
     .eq("id", payload.id);
   if (error) console.error(error);

@@ -74,7 +74,9 @@ export interface VehiclesAndDestination extends Vehicles {
   dispatch_officer_info: UserProfile;
   receive_officer_info: UserProfile;
   item_info: InventoryItems;
+  item_packaged_info: InventoryItems;
   vehicle_expenses: VehicleExpense[];
+  sale_dispatch: SaleDispatchJoined[];
 }
 export interface VehicleExpensesDetails extends VehicleExpense {
   vehicle_details: Vehicles;
@@ -92,6 +94,7 @@ export type VehicleExpense =
 export type InsertVehicleExpense =
   Database["public"]["Tables"]["vehicle_expenses"]["Insert"];
 export type Sales = Database["public"]["Tables"]["sales"]["Row"];
+export type SaleDispatch = Database["public"]["Tables"]["sale_dispatch"]["Row"];
 export type SalesPayments =
   Database["public"]["Tables"]["sales_payments"]["Row"];
 export type PurchasePayments =
@@ -125,6 +128,10 @@ export interface PurchasesAndPayments extends Purchases {
 
 export interface SalesAndPayments extends Sales {
   payments: SalesPayments[];
+}
+export interface SaleDispatchJoined extends SaleDispatch {
+  vehicle_info: Vehicles;
+  sale_info: Sales;
 }
 
 export interface StocksWithDetails extends Stocks {

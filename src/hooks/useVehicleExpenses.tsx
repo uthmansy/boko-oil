@@ -19,12 +19,16 @@ interface HookReturn {
   isRefetching: boolean;
 }
 
-function useVehicleExpenses(): HookReturn {
+interface Props {
+  vehicle_id?: string;
+}
+
+function useVehicleExpenses({ vehicle_id }: Props): HookReturn {
   // Updated hook name
   const { message } = App.useApp();
 
   const fetchData = async ({ pageParam = 1 }) => {
-    const vehicleExpenses = await getAllVehicleExpenses(pageParam); // Update to vehicle expenses API function
+    const vehicleExpenses = await getAllVehicleExpenses(pageParam, vehicle_id); // Update to vehicle expenses API function
     return vehicleExpenses;
   };
 
@@ -35,18 +39,22 @@ function useVehicleExpenses(): HookReturn {
     hasNextPage,
     isFetchingNextPage,
     isRefetching,
-  } = useInfiniteQuery(vehicleExpenseKeys.getAllPaginated, fetchData, {
-    // Update to vehicle expense query keys
-    getNextPageParam: (lastPage, allPages) => {
-      if (lastPage.length === 10) {
-        return allPages.length + 1; // Increment page number
-      }
-      return undefined; // No more pages to fetch
-    },
-    onError: (error) => {
-      message.error(error as string);
-    },
-  });
+  } = useInfiniteQuery(
+    [vehicleExpenseKeys.getAllPaginated, vehicle_id],
+    fetchData,
+    {
+      // Update to vehicle expense query keys
+      getNextPageParam: (lastPage, allPages) => {
+        if (lastPage.length === 10) {
+          return allPages.length + 1; // Increment page number
+        }
+        return undefined; // No more pages to fetch
+      },
+      onError: (error) => {
+        message.error(error as string);
+      },
+    }
+  );
 
   const vehicleExpenses = data?.pages.flatMap((page) => page);
 

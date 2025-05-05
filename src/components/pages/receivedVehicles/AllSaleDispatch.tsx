@@ -1,27 +1,27 @@
 import { Table } from "antd";
-import useVehicleExpenses from "../../../hooks/useVehicleExpenses";
-import { vehicleExpensesColumns } from "../../../tableColumns/vehicleExpenses";
+import useAllSaleDispatch from "../../../hooks/useAllSaleDispatch";
 import { VehiclesAndDestination } from "../../../types/db";
+import { saleDispatchColumns } from "../../../tableColumns/saleDispatch";
 
 interface Props {
   vehicle: VehiclesAndDestination;
 }
 
-function VehicleExpenses({ vehicle }: Props) {
+function AllSaleDispatch({ vehicle }: Props) {
   const {
     isLoading,
-    vehicleExpenses,
+    dispatches,
     fetchNextPage,
     isFetchingNextPage,
     isRefetching,
-  } = useVehicleExpenses({ vehicle_id: vehicle.id });
+  } = useAllSaleDispatch({ vehicle });
 
   return (
     <Table
       size="small"
       loading={isLoading || isFetchingNextPage || isRefetching}
-      columns={vehicleExpensesColumns}
-      dataSource={vehicleExpenses}
+      columns={saleDispatchColumns}
+      dataSource={dispatches}
       pagination={false} // Disable pagination
       scroll={{ y: 450, x: "max-content" }}
       onScroll={(e) => {
@@ -34,4 +34,4 @@ function VehicleExpenses({ vehicle }: Props) {
   );
 }
 
-export default VehicleExpenses;
+export default AllSaleDispatch;
